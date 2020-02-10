@@ -3,11 +3,11 @@
 ----
 ## Disclaimer!
 
-__You should be very carefull with blindly following any guide on the internet, including this one!__ Try and understand what the code does before you execute it. I've used this approach myself to create a cluster with TeslaMate and Grafana installed and naturally tried to secure it as best as possible. However I can't gaurentee it will stand the test of time..
+__You should be very carefull with blindly following any guide on the internet, including this one!__ Try and understand what the code does before you execute it. I've used this approach myself to create a cluster with TeslaMate and Grafana installed and naturally tried to secure it as best as possible. However I can't guarantee it will stand the test of time..
 
 __I assume you have some knowledge of the Azure portal__, because describing that interface is just to painful. I'll try and be as accomodating as I can, but there are limits :)
 
-__All script provided are powershell scripts__, but you should be able to translate them to any shell and azure clit tool you want.
+__All script provided are powershell scripts__, but you should be able to translate them to any shell and azure cli tool you want.
 
 __There will be costs involved if you follow this guide!__
 
@@ -22,7 +22,7 @@ Any remarks, suggestions, niceties or much needed changes? Make an issue/pull re
 ---
 
 ## Prerequisites
-__You should have a kubernetes cluster set up.__ In Azure a single cheap node should suffice. I personally use a single node pool with kubernetes version 1.17.0 containing a single standard_b2s node. I'm fairly certain a standard_B1ms will work as well, though I'd recommend not to get any lower.
+__You should have a kubernetes cluster set up.__ In Azure a single cheap node should suffice. I personally use a single node pool with kubernetes version 1.17.0 containing a single standard_b2s node. I'm fairly certain a standard_B1ms will work as well, though I'd recommend not to get any lower. Also some persistance storage is nice.
 
 I've opted to use RBAC in the cluster, which complicates some stuff. This guide will assume you've done this as well and you want a working kubernetes dashboard. So it will be laced with some stuff to make everything work with RBAC.
 
@@ -45,7 +45,7 @@ $clusterResourceGroup = "MC_default_default-cluster_westeurope" #replace this wi
 az aks get-credentials -n $clusterName -g default $resourceGroup
 ```
 
-Next we will ensure the kubernetes dashboard will work nicely with RBAC by giving the clusterUser user (which azure uses) some more rights
+Next we will ensure the kubernetes dashboard will work nicely with RBAC by giving the clusterUser user (which azure uses) some more rights.
 ```powershell
 kubectl create clusterrolebinding kubernetes-dashboard -n kube-system --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 kubectl create clusterrolebinding clusterUser -n kube-system --clusterrole=cluster-admin --user=clusterUser
@@ -54,19 +54,19 @@ After this you should be able to access the kubernetes dashboard using the follo
 ```powershell
 az aks browse --resource-group $resourceGroup --name $clusterName
 ```
-This way you can check at any step the status of your cluster and also any errors in deployment.
+This way you can check at any step the status of your cluster and also any errors in deployments.
 
 
-### Assigning a domainname to your cluster
+### Assigning a domain to your cluster
 
-Now we will crate a public static IP adress which we can later assign to a DNS record.
+Now we will crate a public static IP adress which we can later assign to a DNS record so when you go to your domain you get routed to your cluster.
 ```powershell
 az network public-ip create --resource-group $clusterResourceGroup  --name PublicIP --sku Basic --allocation-method static #create the ip adress
 #wait a bit for azure to provision the ip adress
  az network public-ip list --query "[?ipAddress!=null]|[?contains(name, 'PublicIP')].[ipAddress]" --output tsv #returns the ip adress
  $ipAdress = '10.0.0.1' #replace this with your created ip adress
 ```
-Inside the Azure Portal create a DNS name inside the resource group of your cluster ($clusterResourceGroup). Add a new A record * with the ip adress as your value. You can do this manually or with the command below. Note: if you dont already have a dns zone, create one using this guide: https://docs.microsoft.com/azure/dns/dns-delegate-domain-azure-dns.
+Inside the Azure Portal create a DNS name inside the resource group of your cluster ($clusterResourceGroup). Add a new A record * with the ip adress as your value. You can do this manually or with the command below. Note: if you don't already have a dns zone, create one using this guide: https://docs.microsoft.com/azure/dns/dns-delegate-domain-azure-dns.
 
 ```powershell
 $dnsZoneName = "your-zone-name.contoso.com"
