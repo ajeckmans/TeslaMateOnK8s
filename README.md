@@ -9,11 +9,11 @@ __I assume you have some knowledge of the Azure portal__, because describing tha
 
 __All script provided are powershell scripts__, but you should be able to translate them to any shell and azure clit tool you want.
 
-__There whill be costs involved if you follow this guide!__
+__There will be costs involved if you follow this guide!__
 
-__There whill be costs involved if you follow this guide!__
+__There will be costs involved if you follow this guide!__
 
-__There whill be costs involved if you follow this guide!__
+__There will be costs involved if you follow this guide!__
 
 ---
 
