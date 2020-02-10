@@ -1,4 +1,4 @@
-# How to install TeslaMate in an Azure cluster (aks, k8s)
+# How to install TeslaMate in an Azure cluster
 
 ----
 ## Disclaimer!
