@@ -1,0 +1,32 @@
+config:
+  existingSecret: oauth2-proxy-creds
+
+extraArgs:
+  whitelist-domain: .<<YOUR_DOMAIN>>
+  cookie-domain: .<<YOUR_DOMAIN>>
+  provider: github
+
+authenticatedEmailsFile:
+  enabled: true
+  restricted_access: |-
+    <<GITHUB_USER_EMAILADRESS_YOU_WANT_TO_HAVE_ACCESS>>
+    <<ANOTHER_GITHUB_USER_EMAILADRESS_YOU_WANT_TO_HAVE_ACCESS>>
+
+# htpasswdFile:
+#   enabled: true
+#   entries:
+#     - <<A_USERNAME>>:{SHA}<<A_SECRET>>
+
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - auth.<<YOUR_DOMAIN>>
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+  tls:
+    - secretName: auth-tls-secret
+      hosts:
+        - auth.<<YOUR_DOMAIN>>
+

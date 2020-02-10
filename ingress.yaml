@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashboard-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/auth-url: "https://auth.<<YOUR_DOMAIN>>/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://auth.<<YOUR_DOMAIN>>/oauth2/start?rd=https%3A%2F%2F$host$request_uri"
+spec:
+  tls:
+  - hosts:
+    - teslamate.<<YOUR_DOMAIN>>
+    - grafana.<<YOUR_DOMAIN>>
+    secretName: tls-secret
+  rules:
+  - host: teslamate.<<YOUR_DOMAIN>>
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: teslamate
+          servicePort: 4000
+  - host: grafana.<<YOUR_DOMAIN>>
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 3001

@@ -1,0 +1,102 @@
+apiVersion: 1
+
+persistence:
+  enabled: true
+
+service:
+  port: 3001
+
+plugins:
+- pr0ps-trackmap-panel
+- natel-discrete-panel
+- grafana-piechart-panel
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: TeslaMate
+      type: postgres
+      url: teslamate-postgresql:5432
+      user: teslamate
+      database: teslamate
+      password: teslamate
+      access: proxy
+      basicAuth: false
+      withCredentials: false
+      isDefault: true
+      secureJsonData:
+        password: teslamate
+      jsonData:
+        postgresVersion: 1000
+        sslmode: disable
+      version: 1
+      editable: true
+
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'teslamate'
+      orgId: 1
+      folder: TeslaMate
+      folderUid: Nr4ofiDZk
+      type: file
+      disableDeletion: false
+      editable: true
+      updateIntervalSeconds: 86400
+      options:
+        path: /var/lib/grafana/dashboards/teslamate
+    - name: 'teslamate-internal'
+      orgId: 1
+      folder: Internal
+      folderUid: Nr5ofiDZk
+      type: file
+      disableDeletion: false
+      editable: true
+      updateIntervalSeconds: 86400
+      options:
+        path: /var/lib/grafana/dashboards/teslamate-internal
+
+dashboards:
+  teslamate:
+    visited:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/visited.json
+    vampire-drain:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/vampire-drain.json
+    updates:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/updates.json
+    states:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/states.json
+    projected-range:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/projected-range.json
+    overview:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/overview.json
+    mileage:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/mileage.json
+    locations:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/locations.json
+    efficiency:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/efficiency.json
+    drives:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/drives.json
+    drive-stats:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/drive-stats.json
+    charging-stats:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charging-stats.json
+    charges:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charges.json
+    charge-level:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/charge-level.json
+  teslamate-internal:
+    drive-details:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/internal/drive-details.json
+    charge-details:
+      url: https://raw.githubusercontent.com/adriankumpf/teslamate/master/grafana/dashboards/internal/charge-details.json
+
+env:
+  DATABASE_USER: teslamate
+  DATABASE_PASS: teslamate
+  DATABASE_NAME: teslamate
+  DATABASE_HOST: teslamate-postgresql
