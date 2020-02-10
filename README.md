@@ -17,6 +17,10 @@ __There whill be costs involved if you follow this guide!__
 
 ---
 
+Any remarks, suggestions, niceties or much needed changes? Make an issue/pull request!
+
+---
+
 ## Prerequisites
 __You should have a kubernetes cluster set up.__ In Azure a single cheap node should suffice. I personally use a single node pool with kubernetes version 1.17.0 containing a single standard_b2s node. I'm fairly certain a standard_B1ms will work as well, though I'd recommend not to get any lower.
 
