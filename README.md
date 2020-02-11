@@ -1,5 +1,7 @@
 # How to install TeslaMate in an Azure cluster
 
+This is a guide to help you install [TeslaMate](https://github.com/adriankumpf/teslamate) on an Azure Kubernetes cluster.
+
 ----
 ## Disclaimer!
 
