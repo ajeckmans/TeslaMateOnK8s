@@ -3,9 +3,9 @@
 ----
 ## Disclaimer!
 
-__You should be very carefull with blindly following any guide on the internet, including this one!__ Try and understand what the code does before you execute it. I've used this approach myself to create a cluster with TeslaMate and Grafana installed and naturally tried to secure it as best as possible. However I can't guarantee it will stand the test of time..
+__You should be very careful with blindly following any guide on the internet, including this one!__ Try and understand what the code does before you execute it. I've used this approach myself to create a cluster with TeslaMate and Grafana installed and naturally tried to secure it as best as possible. However, I can't guarantee it will stand the test of time..
 
-__I assume you have some knowledge of the Azure portal__, because describing that interface is just to painful. I'll try and be as accomodating as I can, but there are limits :)
+__I assume you have some knowledge of the Azure portal__, because describing that interface is just to painful. I'll try and be as accommodating as I can, but there are limits :)
 
 __All script provided are powershell scripts__, but you should be able to translate them to any shell and azure cli tool you want.
 
@@ -17,22 +17,22 @@ __There will be costs involved if you follow this guide!__
 
 ---
 
-Any remarks, suggestions, niceties or much needed changes? Make an issue/pull request!
+Any remarks, suggestions, niceties or much-needed changes? Make an issue/pull request!
 
 ---
 
 ## Prerequisites
-__You should have a kubernetes cluster set up.__ In Azure a single cheap node should suffice. I personally use a single node pool with kubernetes version 1.17.0 containing a single standard_b2s node. I'm fairly certain a standard_B1ms will work as well, though I'd recommend not to get any lower. Also some persistance storage is nice.
+__You should have a kubernetes cluster set up.__ In Azure a single cheap node should suffice. I use a single node pool with kubernetes version 1.17.0 containing a single standard_b2s node. I'm fairly certain a standard_B1ms will work as well, though I'd recommend not to get any lower. Also, some persistence storage is nice.
 
 I've opted to use RBAC in the cluster, which complicates some stuff. This guide will assume you've done this as well and you want a working kubernetes dashboard. So it will be laced with some stuff to make everything work with RBAC.
 
-__You also shoud have the following tools installed__. (The following links go to the official websites)
+__You also should have the following tools installed__. (The following links go to the official websites)
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to manage Azure resources programmatically.
 - [Helm v3](https://helm.sh/docs/intro/install/) a deployment manager we will use to intall TeslaMate and Grafana
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) the manage the kubernetes cluster.
 
 ## Configuring the tooling and the cluster
-The first thing we will do is assign a public IP adress to your cluster and bind it to a domain name. This will ensure we get a reliable way of contacting any service we want inside the cluster (like TeslaMate). 
+The first thing we will do is assign a public IP address to your cluster and bind it to a domain name. This will ensure we get a reliable way of contacting any service we want inside the cluster (like TeslaMate). 
 
 We need to log in first
 ```powershell
@@ -40,7 +40,7 @@ We need to log in first
 az login 
 # Will set the kubeconfig of kubectl, so we can interact with the cluster
 $clusterName = "default-cluster" #replace this with your cluster name in Azure
-$resourceGroup = "default" #replace this with the resource group where your cluster resides in in Azure
+$resourceGroup = "default" #replace this with the resource group where your cluster resides in Azure
 $clusterResourceGroup = "MC_default_default-cluster_westeurope" #replace this with the resource group that was created for your cluster
 az aks get-credentials -n $clusterName -g default $resourceGroup
 ```
@@ -79,7 +79,7 @@ az network dns record-set a add-record `
 ```
 
 We're now ready to add nginx-ingress to your cluster. It will provide a way to manage external access to your services as well as a way for us to secure it later on.
-We also want to put it behind https so we need a valid certificate, which we will provision using letsencrypt. Furthermore we want to secure any future service, so we're going to be using a oauth2 proxy which will use github.com to let people sign in (you can use other providers as well, such as google).
+We also want to put it behind https so we need a valid certificate, which we will provision using letsencrypt. Furthermore, we want to secure any future service, so we're going to be using a oauth2 proxy which will use github.com to let people sign in (you can use other providers as well, such as google).
 
 ```powershell
 kubectl create namespace ingress-basic # we create a namespace to put the controller in
@@ -108,8 +108,8 @@ helm repo update
 # Install the cert-manager Helm chart
 helm install cert-manager --namespace ingress-basic --version v0.12.0 jetstack/cert-manager --set ingressShim.defaultIssuerName=letsencrypt --set ingressShim.defaultIssuerKind=ClusterIssuer
 
-# open up cluser-issuer,yaml and replace <<YOUR_EMAILADRESS>> with your email. Note this will be public, so maybe a spam mail?
-#next we're going to create the cluster certificate issuer, which will enable us to request certificates from letsencrypt
+# open up cluster-issuer,yaml and replace <<YOUR_EMAILADRESS>> with your email. Note this will be public, so maybe a spam mail?
+#next, we're going to create the cluster certificate issuer, which will enable us to request certificates from letsencrypt
 kubectl apply -f cluster-issuer.yaml --namespace ingress-basic
 ```
 
@@ -126,7 +126,7 @@ kubectl apply -f cluster-issuer.yaml --namespace ingress-basic
   
 The username and password entry can be created on linux using the following command ```htpasswd -sbc passwords <username> <password>```.This will create a file named passwords which will contain an entry like: ```username:{SHA}W6ph5Mm5Pz8GgiULbPgzG37mj9g=```
 
-On windows it can be created using the following script
+On windows, it can be created using the following script
 ```powershell
 $password = "some long password"
 $username = "some username"
@@ -186,5 +186,5 @@ kubectl apply -f ingress.yaml
 ```
 
 ### Some additionals
-You might want to log in to ```teslamate.<<YOUR_DOMAIN>>``` now using you Tesla account.
-Also this is the time to log in to ```grafana.<<YOUR_DOMAIN>>``` to change create that other user + password and disable the default admin account... 
+You might want to log in to ```teslamate.<<YOUR_DOMAIN>>``` now using your Tesla account.
+Also, this is the time to log in to ```grafana.<<YOUR_DOMAIN>>``` to change create that other user + password and disable the default admin account... 
