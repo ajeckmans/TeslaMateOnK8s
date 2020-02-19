@@ -165,6 +165,7 @@ helm upgrade oauth2-proxy --install stable/oauth2-proxy `
 ```powershell
 #adds the helm repository containing the helm chart for teslamate
 helm repo add billimek https://billimek.com/billimek-charts/ 
+helm repo update
 
 #install teslamate
 helm upgrade teslamate billimek/teslamate `
